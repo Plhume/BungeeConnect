@@ -1,0 +1,5 @@
+name: BungeeConnect
+version: '${project.version}'
+main: fr.plhume.bungeeconnect.BungeeConnect
+api-version: 1.19
+authors: [ Plhume ]
