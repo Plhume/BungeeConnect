@@ -8,6 +8,7 @@ public final class BungeeConnect extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
 
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
     }
 
     @Override
