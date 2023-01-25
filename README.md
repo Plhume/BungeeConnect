@@ -15,6 +15,7 @@ java -Xms512M -Xmx512M -jar BungeeCord.jar
 
 > For more help, see [this page](https://www.spigotmc.org/wiki/bungeecord-installation/)
 
+After that, see the SpigotMC web page for download Spigot [SpigotMC](https://www.spigotmc.org/)
 ## 📖 Project Wiki
 
 The Wiki is under written, for more information, contact Plhume on Discord **(Plhume#7517)**
