@@ -1,11 +1,15 @@
 package fr.plhume.bungeeconnect.managers;
 
 import fr.plhume.bungeeconnect.BungeeConnect;
+import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Objects;
 
 /**
  * @author Plhume
@@ -40,6 +44,19 @@ public class DatabaseManager {
 
         serverTable = dbInfos.getString("database.tables.servers");
         worldTable = dbInfos.getString("database.tables.worlds");
+        createTable();
     }
 
+    private void createTable() throws SQLException {
+        Objects.requireNonNull(this.getSqlStatement()).execute("CREATE TABLE IF NOT EXISTS `" + this.serverTable + "` (" +
+                "`id` INT NOT NULL AUTO_INCREMENT," +
+                "`name` VARCHAR(45) NULL," +
+                "`bungeeName` VARCHAR(45) NULL," +
+                "`material` VARCHAR(45) NULL," +
+                "`slot` INT NULL," +
+                "`status` VARCHAR(45) NULL," +
+                "`description` TEXT NULL," +
+                "`display` BIT NULL," +
+                "PRIMARY KEY (`id`))");
+    }
 }
