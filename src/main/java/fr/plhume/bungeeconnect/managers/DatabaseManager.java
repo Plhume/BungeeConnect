@@ -1,14 +1,14 @@
 package fr.plhume.bungeeconnect.managers;
 
 import fr.plhume.bungeeconnect.BungeeConnect;
+import fr.plhume.bungeeconnect.objects.ServersObject;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -58,6 +58,61 @@ public class DatabaseManager {
                 "`description` TEXT NULL," +
                 "`display` BIT NULL," +
                 "PRIMARY KEY (`id`))");
+    }
+
+    public List<ServersObject> getServersList() {
+        List<ServersObject> serversList = new ArrayList<>();
+        ResultSet result;
+
+        try {
+            result = Objects.requireNonNull(this.getSqlStatement()).executeQuery("SELECT * FROM " + this.serverTable);
+            while (result.next()) {
+                ServersObject servers = new ServersObject(result);
+                serversList.add(servers);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return serversList;
+    }
+
+    public ServersObject getServer(String serverName) {
+        ServersObject servers = null;
+        ResultSet result;
+
+        try {
+            result = Objects.requireNonNull(this.getSqlStatement()).executeQuery("SELECT * FROM " + this.serverTable + " WHERE `name` = " + serverName);
+            result.next();
+
+            servers = new ServersObject(result);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return servers;
+    }
+
+    public void checkServers(String[] servers) {
+        List<String> serverLoaded = new ArrayList<>();
+        List<ServersObject> serversList = this.getServersList();
+
+        for (String serverName : servers) {
+            for (ServersObject serverDBName : serversList) {
+                if (serverName.equals(serverDBName.getBungeeName())) {
+                    serverLoaded.add((serverDBName.getBungeeName()));
+                }
+            }
+        }
+
+        for (String server : servers) {
+            if (!serverLoaded.contains(server)) {
+                try {
+                    Objects.requireNonNull(this.getSqlStatement()).execute("INSERT INTO " + this.serverTable + "(`name`, `bungeeName`, `material`, `slot`, `status`, `description`, `display`)" +
+                            "VALUES ('" + server + "', '" + server + "', 'BEDROCK', '-1', 'close', '', 0)");
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public void setMaterial(String serverName, Material material) {
