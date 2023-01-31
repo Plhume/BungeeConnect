@@ -59,4 +59,48 @@ public class DatabaseManager {
                 "`display` BIT NULL," +
                 "PRIMARY KEY (`id`))");
     }
+
+    public void setMaterial(String serverName, Material material) {
+        try {
+            Objects.requireNonNull(this.getSqlStatement()).execute("UPDATE " + this.serverTable + " SET `material` = '" + material.name() + "' WHERE `name` = '" + serverName + "'");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setServerName(String serverName, String newName) {
+        try {
+            Objects.requireNonNull(this.getSqlStatement()).execute("UPDATE " + this.serverTable + " SET `name` = '" + newName + "' WHERE `name` = '" + serverName + "'");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setStatus(String serverName, String status) {
+        try {
+            Objects.requireNonNull(this.getSqlStatement()).execute("UPDATE " + this.serverTable + " SET `status` = '" + status + "' WHERE `name` = '" + serverName + "'");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setDisplay(String serverName, boolean display, int index) {
+        plugin.getLogger().info(display + " " + serverName);
+        try {
+            Objects.requireNonNull(this.getSqlStatement()).execute("UPDATE " + this.serverTable + " SET `display` = " + display + ", `slot` = '" + index + "' WHERE `name` = '" + serverName + "'");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Statement getSqlStatement() {
+        try {
+            Connection conn = DriverManager.getConnection(this.jdbcString, this.DBUsername, this.DBPassword);
+            return conn.createStatement();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }
