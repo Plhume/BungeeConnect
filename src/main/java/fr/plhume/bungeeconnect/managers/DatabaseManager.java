@@ -16,16 +16,14 @@ import java.util.Objects;
  */
 public class DatabaseManager {
 
-    private BungeeConnect plugin;
-    private Statement statement;
+    private final BungeeConnect plugin;
     private String serverTable;
-    private String worldTable;
 
     private String jdbcString;
     private String DBUsername;
     private String DBPassword;
 
-    public DatabaseManager(BungeeConnect plugin) throws SQLException, IOException {
+    public DatabaseManager(BungeeConnect plugin) throws SQLException {
         this.plugin = plugin;
         Configuration dbConfig = plugin.getConfig();
         connect(dbConfig);
@@ -43,7 +41,6 @@ public class DatabaseManager {
         DBPassword = password;
 
         serverTable = dbInfos.getString("database.tables.servers");
-        worldTable = dbInfos.getString("database.tables.worlds");
         createTable();
     }
 
