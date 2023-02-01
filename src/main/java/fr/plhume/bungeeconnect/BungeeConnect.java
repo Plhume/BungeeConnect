@@ -1,6 +1,8 @@
 package fr.plhume.bungeeconnect;
 
+import fr.plhume.bungeeconnect.listeners.PluginMessageListener;
 import fr.plhume.bungeeconnect.managers.DatabaseManager;
+import fr.plhume.bungeeconnect.managers.PluginMessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -22,6 +24,7 @@ public final class BungeeConnect extends JavaPlugin {
     private String serverName;
     private String[] servers;
     private DatabaseManager db;
+    private PluginMessageManager pmmanager;
     private final Map<UUID, String> mapChangeName = new HashMap<>();
     private final Map<UUID, Location> teleportMap = new HashMap<>();
 
@@ -33,12 +36,18 @@ public final class BungeeConnect extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
 
+        getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new PluginMessageListener(this));
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+
+        this.pmmanager = new PluginMessageManager(this);
+    }
 
     public DatabaseManager getDatabaseManager() {
         return this.db;
     }
 
+    public PluginMessageManager getPluginMessageManager() {
+        return this.pmmanager;
     }
 
     public String getServerName() {
@@ -83,6 +92,7 @@ public final class BungeeConnect extends JavaPlugin {
     public void tpPlayer(Player player, Location location, String serverName, String worldName) {
         if (!serverName.equals(this.getServerName())) {
             this.sendServer(player, serverName);
+            this.getPluginMessageManager().sendTeleportRequest(player, location, serverName, worldName);
         } else {
             location.setWorld(Bukkit.getWorld(worldName));
             player.teleport(location);
